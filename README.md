@@ -3,11 +3,11 @@
 > Code + Data Accompanying the Eco-Stats Text
 
 <!-- badges: start -->
-[![ci](https://github.com/dwarton/ecostats/workflows/ci/badge.svg)](https://github.com/dwarton/ecostats/actions?query=workflow%3Aci) 
+[![ci](https://github.com/eco-stats/ecostats/workflows/ci/badge.svg)](https://github.com/eco-stats/ecostats/actions?query=workflow%3Aci) 
 [![License](http://img.shields.io/badge/license-LGPL%20(%3E=%202.1)-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
 [![CRAN](http://www.r-pkg.org/badges/version/ecostats)](https://CRAN.R-project.org/package=ecostats) 
 [![Downloads](http://cranlogs.r-pkg.org/badges/ecostats?color=brightgreen)](https://www.r-pkg.org/pkg/ecostats)
-[![R-CMD-check](https://github.com/dwarton/ecostats/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/fontikar/ecostats/actions/workflows/R-CMD-check.yaml) 
+[![R-CMD-check](https://github.com/eco-stats/ecostats/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/eco-stats/ecostats/actions/workflows/R-CMD-check.yaml) 
 <!-- [![Codecov test coverage](https://codecov.io/gh/dwarton/ecostats/branch/ghactions/graph/badge.svg?token=95vH8l02ZK)](https://app.codecov.io/gh/dwarton/ecostats?branch=ghactions) -->
 <!-- badges: end -->
 
@@ -31,6 +31,6 @@ library(ecostats)
 But if you want access to this development version, with the latest bells and whistles (where applicable), it can be installed from GitHub using the `devtools` package:
 
 ``` r
-devtools::install_github('dwarton/ecostats', ref='main')
+devtools::install_github('eco-stats/ecostats', ref='main')
 library(ecostats)
 ```
