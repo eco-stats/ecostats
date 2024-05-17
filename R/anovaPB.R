@@ -186,6 +186,7 @@ anovaPB=function(objectNull, object, n.sim=999, colRef = switch(class(object)[1]
   return(statReturn)
 }
 
+#' @export
 print.anovaPB=function(x, digits = max(getOption("digits") - 3, 3),
                        signif.stars = getOption("show.signif.stars"),
                        dig.tst = max(1, min(5, digits - 1)), ...) 

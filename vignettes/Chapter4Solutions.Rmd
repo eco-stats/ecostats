@@ -95,15 +95,16 @@ To analyse, we first subset to the three treatments of interest (1=gunshot, 2=ai
 
 ```r
 crowAfter = ravens[ravens$treatment <=3,]
+crowAfter$treatment = factor(crowAfter$treatment)
 ft_crowAfter = lm(After~site+treatment,data=crowAfter)
 anova(ft_crowAfter)
 #> Analysis of Variance Table
 #> 
 #> Response: After
 #>           Df Sum Sq Mean Sq F value Pr(>F)
-#> site      11 28.667  2.6061  0.9269 0.5327
-#> treatment  1  2.667  2.6667  0.9485 0.3402
-#> Residuals 23 64.667  2.8116
+#> site      11 28.667  2.6061  1.0118 0.4679
+#> treatment  2 10.667  5.3333  2.0706 0.1500
+#> Residuals 22 56.667  2.5758
 ```
 To check assumptions we could look at diagnostic plots:
 
