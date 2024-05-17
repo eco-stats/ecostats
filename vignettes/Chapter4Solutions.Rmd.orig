@@ -67,6 +67,7 @@ We will use a linear model, with `location` included as a blocking factor to con
 To analyse, we first subset to the three treatments of interest (1=gunshot, 2=airhorn, 3=whistle):
 ```{r box4.3ravensblock}
 crowAfter = ravens[ravens$treatment <=3,]
+crowAfter$treatment = factor(crowAfter$treatment)
 ft_crowAfter = lm(After~site+treatment,data=crowAfter)
 anova(ft_crowAfter)
 ```
