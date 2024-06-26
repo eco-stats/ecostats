@@ -305,23 +305,29 @@ plotenvelope = function (y, which = 1:2, sim.method="refit",
     mf <- mf[c(1L, m)]
     #    mf$drop.unused.levels <- TRUE
     mf[[1L]] <- quote(stats::model.frame)
-    modelF <- try( eval(mf, parent.frame()), silent=TRUE )
-    
+
+    if(is.null(object$data) | m[2L]==0L) # Only coerce to model frame if data argument not specified by the user.
+      modelF <- try( eval(mf, parent.frame()), silent=TRUE )
+    else
+      modelF <- object$data
+
     # if for some reason this didn't work (mgcv::gam objects cause grief) then just call model.frame on object:    
     # also, do this for lme4 because it is so not a team player 
-    if(inherits(modelF, "try-error") | inherits(object,c("lmerMod","glmerMod","glmmTMB")) )
-      modelF = model.frame(object)
-    
+    if(inherits(modelF, "try-error") | inherits(object,c("lmerMod","glmerMod","glmmTMB")))
+      modelF <- model.frame(object)
+
+    respName <- names(model.frame(object))[1]
+    whichResp <- which(names(modelF)==respName) # get column number of response (could be anywhere for user-entered data)
+
     # if response has brackets in its name, it is some sort of expression,
     # put quotes around it so it works (?)
-    respName   = names(modelF)[1]
     if(regexpr("(",respName,fixed=TRUE)>0)
     {
-      newResp    = sprintf("`%s`", respName) #putting quotes around response name
-      fm.update  = reformulate(".", response = newResp)
+      newResp    <- sprintf("`%s`", respName) #putting quotes around response name
+      fm.update  <- reformulate(".", response = newResp)
     }
     else
-      fm.update  = reformulate(".")
+      fm.update  <- reformulate(".")
     
     # if there is an offset, add it, as a separate argument when updating
     offs=NULL
@@ -340,9 +346,9 @@ plotenvelope = function (y, which = 1:2, sim.method="refit",
     for(i.sim in 1:n.sim)
     {
       if(is.mva)
-        modelF[[1]] = matrix(yNew[,i.sim],ncol=n.resp,dimnames=dimnames(yResp))
+        modelF[[whichResp]] = matrix(yNew[,i.sim],ncol=n.resp,dimnames=dimnames(yResp))
       else
-        modelF[[1]] = yNew[,i.sim]
+        modelF[[whichResp]] = yNew[,i.sim]
       if(inherits(modelF$offs,"try-error") | is.null(modelF$offs))
         newFit         = try(update(objectY, formula=fm.update, data=modelF))
       else
