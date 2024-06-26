@@ -75,7 +75,7 @@
 
 #' @export
 
-anovaPB=function(objectNull, object, n.sim=999, colRef = switch(class(object)[1],"lm"=5,"lmerMod"=6,4), rowRef=2,...)
+anovaPB=function(objectNull, object, n.sim=999, colRef = switch(class(object)[1],"lm"=5,"lmerMod"=6, glmmTMB = 6, 4), rowRef=2,...)
 {
   # check the second model is the larger one... otherwise this will be a prob later
   if(length(unlist(coef(objectNull)))>length(unlist(coef(object))))
@@ -136,7 +136,7 @@ anovaPB=function(objectNull, object, n.sim=999, colRef = switch(class(object)[1]
   modelF <- try( eval(mf, parent.frame()), silent=TRUE )
   
   # if for some reason this didn't work (mgcv::gam objects cause grief) then just call model.frame on object:    
-  if(inherits(modelF, "try-error") | inherits(object,c("lmerMod","glmerMod")) )
+  if(inherits(modelF, "try-error") | inherits(object,c("lmerMod","glmerMod", "glmmTMB")) )
       modelF = model.frame(object)
 
   # if there is an offset, add it, as a separate argument when updating
