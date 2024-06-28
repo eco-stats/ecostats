@@ -72,6 +72,7 @@
 #' anovaPB(rpois_int,rpois_glm,n.sim=99)
 #' 
 #' @import stats
+#' @importFrom methods .hasSlot
 
 #' @export
 
@@ -124,20 +125,44 @@ anovaPB=function(objectNull, object, n.sim=999, colRef = switch(class(object)[1]
   stats[1]=statObs[rowRef,colRef]
 #  mf = model.frame(object)
   if( inherits(object,c("lmerMod","glmerMod")) )
+  {
     mf <- match.call(call=object@call)
+    if(.hasSlot(object,"data"))
+       dat <- object@data
+    else
+       dat <- NULL
+  }
   else
+  {
     mf <- match.call(call=object$call)
+    dat <- object$data
+  }
   m <- match(c("formula", "data", "subset", 
                "weights", "na.action", "etastart", 
                "mustart", "offset"), names(mf), 0L)
   mf <- mf[c(1L, m)]
   #    mf$drop.unused.levels <- TRUE
   mf[[1L]] <- quote(stats::model.frame)
+
+  # try to coerce to a data frame
   modelF <- try( eval(mf, parent.frame()), silent=TRUE )
-  
   # if for some reason this didn't work (mgcv::gam objects cause grief) then just call model.frame on object:    
-  if(inherits(modelF, "try-error") | inherits(object,c("lmerMod","glmerMod")) )
-      modelF = model.frame(object)
+  # also, do this for lme4 because it is so not a team player 
+  if(inherits(modelF, "try-error") | inherits(object,c("lmerMod","glmerMod","glmmTMB")))
+    modelF <- model.frame(object)
+  
+  respName <- names(model.frame(object))[1]
+  whichResp <- 1
+  # if data object available, add stuff to modelF that is not there... hack fix for offsets that can't be found by model.frame
+  if(is.null(dat)==FALSE)
+    if(is.list(dat)) # only try this when a list or data frame is provided
+    {  
+      whichAdd = which( names(dat) %in% names(modelF) == FALSE)
+      if(length(whichAdd)>0)
+        for (iAdd in whichAdd)
+          if(is.list(dat[[iAdd]])==FALSE) #stuff added can't be a data frame!
+            modelF[[names(dat)[iAdd]]] = dat[[iAdd]]
+    }
 
   # if there is an offset, add it, as a separate argument when updating
   offs=NULL
@@ -145,7 +170,6 @@ anovaPB=function(objectNull, object, n.sim=999, colRef = switch(class(object)[1]
 
   # if response has brackets in its name, it is some sort of expression,
   # put quotes around it so it works (?)
-  respName   = names(modelF)[1]
   if(regexpr("(",respName,fixed=TRUE)>0)
   {
     newResp    = sprintf("`%s`", respName)
@@ -157,7 +181,7 @@ anovaPB=function(objectNull, object, n.sim=999, colRef = switch(class(object)[1]
   # now n.sim times, simulate new response, refit models and get anova again
   for(iBoot in 1:n.sim+1)
   {
-    modelF[[1]]   = as.matrix(simulate(objectNull), dimnames=respDimnames) #matrix to fix lme4 issues
+    modelF[[whichResp]]   = as.matrix(simulate(objectNull), dimnames=respDimnames) #matrix to fix lme4 issues
     if(inherits(modelF$offs,"try-error") | is.null(modelF$offs))
     {
       objectiNull  = update(objectNull, formula=fm.update, data=modelF)
@@ -179,7 +203,7 @@ anovaPB=function(objectNull, object, n.sim=999, colRef = switch(class(object)[1]
   # change the name of the P-value column to whatever it was in the original anova table
   hasP = grep("Pr",colnames(statObs))
   colnames(statReturn)[colRef+1]=colnames(statObs)[hasP[1]]
-    
+
   # add some bells and whistles to the anova table, useful for printing
   attr(statReturn, "heading") = attr(statObs,"heading")
   class(statReturn)=c("anovaPB",class(statObs))

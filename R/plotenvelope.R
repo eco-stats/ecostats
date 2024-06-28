@@ -180,6 +180,7 @@
 #' \donttest{plotenvelope(iris_mlm, which=1:3, overlay=FALSE, conf.level=1-0.05/4)}
 #' 
 #' @importFrom grDevices adjustcolor 
+#' @importFrom methods .hasSlot
 #' @import graphics
 #' @import stats
 #' @export
@@ -296,9 +297,18 @@ plotenvelope = function (y, which = 1:2, sim.method="refit",
     # get a model frame with everything in it and update on original data.
     # This is done to set up the framework to use for simulating - all we would need to do then is change first element of mf (response).
     if( inherits(object,c("lmerMod","glmerMod")) )
+    {
       mf <- match.call(call=object@call)
+      if(.hasSlot(object,"data"))
+        dat <- object@data
+      else
+        dat <- NULL
+    }
     else
+    {
       mf <- match.call(call=object$call)
+      dat <- object$data
+    }
     m <- match(c("formula", "data", "subset", 
                  "weights", "na.action", "etastart", 
                  "mustart", "offset"), names(mf), 0L)
@@ -306,19 +316,27 @@ plotenvelope = function (y, which = 1:2, sim.method="refit",
     #    mf$drop.unused.levels <- TRUE
     mf[[1L]] <- quote(stats::model.frame)
 
-    if(is.null(object$data) | m[2L]==0L) # Only coerce to model frame if data argument not specified by the user.
-      modelF <- try( eval(mf, parent.frame()), silent=TRUE )
-    else
-      modelF <- object$data
-
+    
+    # try to coerce to a data frame
+    modelF <- try( eval(mf, parent.frame()), silent=TRUE )
     # if for some reason this didn't work (mgcv::gam objects cause grief) then just call model.frame on object:    
     # also, do this for lme4 because it is so not a team player 
     if(inherits(modelF, "try-error") | inherits(object,c("lmerMod","glmerMod","glmmTMB")))
       modelF <- model.frame(object)
 
     respName <- names(model.frame(object))[1]
-    whichResp <- which(names(modelF)==respName) # get column number of response (could be anywhere for user-entered data)
-
+    whichResp <- 1
+    # if data object available, add stuff to modelF that is not there... hack fix for offsets that can't be found by model.frame
+    if(is.null(dat)==FALSE)
+      if(is.list(dat)) # only try this when a list or data frame is provided
+      {  
+        whichAdd = which( names(dat) %in% names(modelF) == FALSE)
+        if(length(whichAdd)>0)
+          for (iAdd in whichAdd)
+            if(is.list(dat[[iAdd]])==FALSE) #stuff added can't be a data frame!
+              modelF[[names(dat)[iAdd]]] = dat[[iAdd]]
+      }
+    
     # if response has brackets in its name, it is some sort of expression,
     # put quotes around it so it works (?)
     if(regexpr("(",respName,fixed=TRUE)>0)
