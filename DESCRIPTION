@@ -1,7 +1,7 @@
 Package: ecostats
 Title: Code and Data Accompanying the Eco-Stats Text (Warton 2022)
-Version: 1.1.14
-Date: 2024-06-28
+Version: 1.2
+Date: 2024-07-01
 Authors@R: c(person("David", "Warton", email = "david.warton@unsw.edu.au", role = c("aut", "cre")),
             person("Christopher", "Chung", role = "ctb"),
             person("Mark", "Donoghoe", role = "ctb"),

@@ -10,6 +10,7 @@ anovaPB(
   n.sim = 999,
   colRef = switch(class(object)[1], lm = 5, lmerMod = 6, 4),
   rowRef = 2,
+  ncpus = NULL,
   ...
 )
 }
@@ -34,6 +35,9 @@ for \code{glm} and \code{gam} objects).}
 \item{rowRef}{the row number where the test statistic of interest can be found
 in the standard \code{anova} output when calling \code{anova(objectNull,object)}.
 Defaults to \code{2}, because it is on the second row for most common models.}
+
+\item{ncpus}{the number of CPUs to use. Default (NULL) uses two less than the total 
+available.}
 
 \item{...}{further arguments sent through to \code{anova}.}
 }

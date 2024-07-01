@@ -146,7 +146,7 @@ Well it looks like there should be two archetypes (presumably, one of these is i
 He wants to know *why* species vary in their environmental response, so a good idea would be to include predictors on species (species traits) and to use a fourth corner model to understand the extent to which interspecific variation in environmental response can be explained by these traits.
 
 ## Code Box 16.4: A fourth corner model for spider data using traitglm
-```{r code16.4}
+```{r code16.4, fig.width=5, fig.height=5}
 library(gllvm)
 data(spider)
 X = spider$x[,c("soil.dry","herb.layer")]
@@ -171,7 +171,7 @@ envMat = as.matrix(antTraits$env)
 
 _(The below code chunk takes about a minute to run.)_
 
-```{r ex16.5}
+```{r ex16.5, fig.width=6, fig.height=6}
 ft_anttrait = gllvm(antTraits$abund, envMat, antTraits$traits, randomX=~envMat, family="negative.binomial", starting.val="zero")
 logLik(ft_anttrait)
 library(lattice)

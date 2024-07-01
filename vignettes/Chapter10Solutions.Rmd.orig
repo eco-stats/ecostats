@@ -93,7 +93,6 @@ ft_crab = glm(CrabPres~Time*Dist, family=binomial("cloglog"),
 ```
 
 For Exercise 10.2:
-\begin{verbatim}
 ```{r box10.1.2}
 data(windFarms)
 eels = windFarms$abund[,16]
@@ -136,7 +135,7 @@ summary(ft_crab)
 
 
 ## Code Box 10.3: Dunn-Smyth residual plots for the crab data, using the `mvabund` package
-```{r box10.3}
+```{r box10.3, fig.width=5, fig.height=5}
 library(mvabund)
 ftMany_crab = manyglm(CrabPres~Time*Dist,family=binomial("cloglog"),
              data=seaweed)
@@ -145,7 +144,7 @@ plotenvelope(ftMany_crab, which=1)
 
 
 ## Code for Figure 10.8
-```{r fig10.8}
+```{r fig10.8, fig.width=5, fig.height=5}
 plotenvelope(ftMany_crab, which=1, n.sim=39)
 plotenvelope(ftMany_crab, which=1, n.sim=39)
 ```
@@ -171,7 +170,7 @@ Look for a fan-shape on a residual plot to check the mean-variance assumption, a
 
 ## Code Box 10.4: Assumption checking for Ostracod counts of Exercise 10.4.}
 
-```{r box10.4, fig.width=8}
+```{r box10.4, fig.width=8, fig.height=3}
 seaweed$logWmass = log(seaweed$Wmass)
 ft_countOst=manyglm(Ost~logWmass+Time*Dist,data=seaweed,
              family="poisson")
@@ -210,7 +209,7 @@ There is no evidence of a fan shape, residuals are close to a straight line on t
 
 *Refit the model using the `manyglm` function under the Poisson assumption, and hence construct a residual plot.*
 
-```{r box10.6Poisson, fig.width=8}
+```{r box10.6Poisson, fig.width=6}
 data(reveg)
 Haplotaxida=reveg$abund[,12]
 worms = reveg$abund$Haplotaxida
@@ -220,7 +219,7 @@ plotenvelope(ft_worms, which=1:2, n.sim=99)
 ```
 
 *Also fit a negative binomial to the data and construct a residual plot.*
-```{r box10.6NB, fig.width=8}
+```{r box10.6NB, fig.width=6}
 ft_wormsNB = manyglm(worms~treatment,family="negative.binomial", data=reveg)
 par(mfrow=c(1,2),mar=c(3,3,1.5,0.5),mgp=c(1.75,0.75,0))
 plotenvelope(ft_wormsNB, which=1:2, n.sim=99)
@@ -307,7 +306,7 @@ anova(ft_wormmanyPois)
 ```
 
 ## Code Box 10.9: Using an observation-level random effect for a binomial response
-```{r box10.9Load,fig.width=6}
+```{r box10.9Load,fig.width=5,fig.height=5}
 data(seedsTemp)
 seedsTemp$propGerm = seedsTemp$NumGerm / seedsTemp$NumSown
 plot(propGerm/(1-propGerm)~Test.Temp,data=seedsTemp,log="y")
@@ -326,7 +325,7 @@ summary(ft_temp)
 *Which model do you think is more appropriate for this dataset -- a Poisson or negative binomial?*
 
 This is a hard question to answer without fitting a model.
-```{r ex10.8P,fig.width=8,fig.height=3.5}
+```{r ex10.8P,fig.width=8,fig.height=3}
 ants = reveg$abund$Formicidae
 ants_Poisson = glm(ants~treatment,data=reveg,family=poisson())
 par(mfrow=c(1,3),mar=c(3,3,1.5,0.5),mgp=c(1.75,0.75,0))

@@ -45,7 +45,7 @@ mtext("(b)",3,adj=0,line=0.5,cex=1.4)
 
 ## Code Box 7.2: Choosing a longitudinal model for the aphid data
 
-```{r box72}
+```{r box72, fig.width=5, fig.height=5}
 library(lme4)
 aphid_int = lmer(logcount~Treatment*Time+Treatment*I(Time^2)+(1|Plot),
     data=aphids$oat,REML=FALSE) # random intercepts model
@@ -96,7 +96,8 @@ legend("bottomleft",c("Excluded","Present"),col=cols,lty=1)
 
 As before we don't see a lot of lines crossing over so expect some correlation. We also see a similar pattern with aphid counts reducing over time, but possibly being higher without bird exclusion 2-5 weeks into the trial. 
 
-```{r ex72long}
+```{r ex72long, fig.width=5, fig.height=5}
+
 library(lme4)
 aphidw_int = lmer(logcount~Treatment*Time+Treatment*I(Time^2)+(1|Plot),
     data=aphids$wheat,REML=FALSE) # random intercepts model
@@ -191,7 +192,7 @@ anova(ft_richNugg)
 
 ## Code Box 7.7: Spatial correlogram for Ian's species richness data
 
-```{r box77}
+```{r box77, fig.width=6, fig.height=6}
 library(pgirmess)
 corRich = with(Myrtaceae,correlog(cbind(X,Y),logrich))
 plot(corRich,xlim=c(0,150),ylim=c(-0.05,0.2))
