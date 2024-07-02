@@ -11,7 +11,7 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE, fig.path=figPath,
+  collapse = TRUE, fig.path="../man/figures/",
   comment = "#>"
 )
 ```
@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 We assume:
 
 * that we have a random sample of paired differences (most importantly, paired differences are independent of each other)
-* the paired differences are approixmately normal.
+* the paired differences are approximately normal.
 
 
 ```{r ex4.1ravenscheck, fig.width=4, fig.height=4}
@@ -72,7 +72,7 @@ ft_crowAfter = lm(After~site+treatment,data=crowAfter)
 anova(ft_crowAfter)
 ```
 To check assumptions we could look at diagnostic plots:
-```{r box4.3ravensblockassumptions, fig.width=8, fig.height=4}
+```{r box4.3ravensblockassumptions, fig.width=7, fig.height=3.5}
  par(mfrow=c(1,2),mar=c(3,3,1,1),mgp=c(1.75,0.75,0))
  plotenvelope(ft_crowAfter)
 ```
@@ -117,7 +117,7 @@ We can get all three variables onto the same graph using a scatterplot, with dif
 *Independence* can be guaranteed by randomly allocating `Dist` treatments to plots.
 
 Remaining assumptions can be checked using diagnostic plots.
-```{r ex4.4seaweedplt, fig.width=8, fig.height=4}
+```{r ex4.4seaweedplt, fig.width=7, fig.height=3.5}
 par(mfrow=c(1,2),mar=c(3,3,1,1),mgp=c(1.75,0.75,0))
 plotenvelope(lmMassDist, n.sim=99)
 ```
@@ -171,7 +171,7 @@ plot(Total ~ interaction(Dist,Time), data=seaweed, log="y") ## and as usual use 
 
 ## Exercise 4.7: Factorial ANOVA assumptions
 
-```{r ex4.7seaweedfact, fig.width=8, fig.height=4}
+```{r ex4.7seaweedfact, fig.width=7, fig.height=3.5}
  par(mfrow=c(1,2),mar=c(3,3,1,1),mgp=c(1.75,0.75,0))
  ft_seaweedFact=lm(logTot~Time*Dist, data=seaweed)
  plotenvelope(ft_seaweedFact, n.sim=99)
@@ -302,8 +302,12 @@ appropriate linear model, being sure to check your assumptions.
 ```{r ex4.9snowmelt, fig.width=4, fig.height=4}
  data(snowmelt)
  plot(flow~snow,data=snowmelt)
+```
+
+```{r ex4.9snowmeltenv, fig.width=7, fig.height=3.5}
  snowReduced = na.omit(snowmelt[,c("flow","snow","elev")]) #this line not normally needed, lm can handle NA's, but seems needed because of a weird conflict with MCMCglmm
  ft_snow = lm(flow~elev+snow, data=snowReduced)
+ par(mfrow=c(1,2),mar=c(3,3,1,1),mgp=c(1.75,0.75,0))
  plotenvelope(ft_snow, n.sim=99)
 ```
 
@@ -313,9 +317,13 @@ This doesn't look great, there is the occasional large value for flowering time,
 
 ```{r ex4.9snowmeltlog, fig.width=4, fig.height=4}
  plot(flow~snow,data=snowmelt,log="y")
+```
+
+```{r ex4.9snowmeltlogEnv, fig.width=7, fig.height=3.5}
  snowReduced$logFlow = log(snowReduced$flow)
  snowReduced2 = snowReduced[snowReduced$logFlow>-Inf,] # look it's a bit naughty, removing the infinite value, but no biggie as only one value
  ft_logsnow = lm(logFlow~elev+snow, data=snowReduced2)
+ par(mfrow=c(1,2),mar=c(3,3,1,1),mgp=c(1.75,0.75,0))
  plotenvelope(ft_logsnow, n.sim=99)
  summary(ft_logsnow)
  confint(ft_logsnow)

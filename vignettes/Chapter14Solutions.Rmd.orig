@@ -11,7 +11,7 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE, fig.path=figPath,
+  collapse = TRUE, fig.path="../man/figures/",
   comment = "#>"
 )
 ```
@@ -87,7 +87,7 @@ No :(
 
 ## Code Box 14.2: Checking assumptions for the revegetation model of Code Box 14.1
 
-```{r code14.2, fig.width=9,fig.height=3.3}
+```{r code14.2, fig.width=8,fig.height=3}
 par(mfrow=c(1,3),mar=c(3,3,2,1),mgp=c(1.75,0.75,0))
 ft_reveg=manyglm(abundMV~treatment,offset=log(pitfalls),family="negative.binomial", data=reveg)
 plotenvelope(ft_reveg, which=1:3)
@@ -99,13 +99,13 @@ Assumptions seem reasonable here.
 
 
 ## Code Box 14.3: Checking mean-variance assumptions for a Poisson revegetation model
-```{r code14.3, fig.width=9, fig.height=3.3}
+```{r code14.3, fig.width=8, fig.height=3}
 ft_revegP=manyglm(abundMV~treatment, offset=log(pitfalls), family="poisson", data=reveg)
 par(mfrow=c(1,3),mar=c(3,3,1,1),mgp=c(1.75,0.75,0))
 plotenvelope(ft_revegP, which=1:3, sim.method="stand.norm")
 ```
 
-```{r code14.3MV, fig.width=6, fig.height=5}
+```{r code14.3MV, fig.width=5, fig.height=4}
 meanvar.plot(reveg$abundMV~reveg$treatment)
 abline(a=0,b=1,col="darkgreen")
 ```
@@ -127,7 +127,7 @@ We assumed:
 
 *Where possible, check these assumptions.*
 
-```{r ex14.5, fig.width=9, fig.height=3.3, warning=FALSE}
+```{r ex14.5, fig.width=8, fig.height=3, warning=FALSE}
 par(mfrow=c(1,3),mar=c(3,3,1,1),mgp=c(1.75,0.75,0))
 ft_epiAlt = manyglm(PA~(Wmass+Size+Time)*Dist,family=binomial("cloglog"), data=seaweed)
 plotenvelope(ft_epiAlt, which=1:3)
@@ -160,7 +160,7 @@ We assumed:
 
 Used "stand.norm"  because this model takes a while to fit. 
 
-```{r ex14.6assumptions, fig.width=9, fig.height=3.3, warning=FALSE}
+```{r ex14.6assumptions, fig.width=8, fig.height=3, warning = FALSE, message = FALSE}
 par(mfrow=c(1,3),mar=c(3,3,1,1),mgp=c(1.75,0.75,0))
 plotenvelope(ft_wind, which=1:3, sim.method="stand.norm")
 ```
@@ -170,7 +170,7 @@ plotenvelope(ft_wind, which=1:3, sim.method="stand.norm")
 
 Things generally look OK, but there is a downward trend on the scale-location plot, weakly suggestive of under-dispersion. Note the sim envelope was constructed using `"stand.norm"`, meaning we compared the smoother to what would be expected for a bunch of standard normal residuals. But the kink could be a weird artifact of the model being fitted (which has loads of parameters) so let's repeat using `"refit"`, but with a smaller value of `n.sim` so it doesn't take too long (it will take a few minutes though):
 
-```{r ex14.6refit, fig.width=9, fig.height=3.3, warning=FALSE}
+```{r ex14.6refit, fig.width=8, fig.height=3, warning=FALSE}
 par(mfrow=c(1,3),mar=c(3,3,1,1),mgp=c(1.75,0.75,0))
 plotenvelope(ft_wind, which=1:3, n.sim=59)
 ```

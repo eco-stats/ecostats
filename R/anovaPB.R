@@ -69,15 +69,18 @@
 #' # fit a Poisson regression to random data:
 #' y = rpois(50,lambda=1)
 #' x = 1:50
-#' rpois_glm = glm(y~x,family=poisson())
-#' rpois_int = glm(y~1,family=poisson())
-#' anovaPB(rpois_int,rpois_glm,n.sim=99)
+#' rpois_glm = glm(y~x, family=poisson())
+#' rpois_int = glm(y~1, family=poisson())
+#' anovaPB(rpois_int, rpois_glm, n.sim=99, ncpus=1)
+#' # this approach would run faster on some larger problems (but maybe not this one!):
+#' \dontrun{anovaPB(rpois_int, rpois_glm, n.sim=99, ncpus=4)}
+
 #' 
 #' @import stats
+#' @importFrom parallel clusterApplyLB clusterExport detectCores makeCluster stopCluster
 #' @importFrom methods .hasSlot
 
 #' @export
-
 anovaPB=function(objectNull, object, n.sim=999, colRef = switch(class(object)[1],"lm"=5,"lmerMod"=6,4), rowRef=2, ncpus=NULL, ...)
 {
   # check the second model is the larger one... otherwise this will be a prob later
@@ -135,7 +138,8 @@ anovaPB=function(objectNull, object, n.sim=999, colRef = switch(class(object)[1]
 #  mf = model.frame(object)
   if( inherits(object,c("lmerMod","glmerMod")) )
   {
-    mf <- match.call(call=object@call)
+    cll <- object@call
+    mf  <- match.call(call=cll)
     if(.hasSlot(object,"data"))
        dat <- object@data
     else
@@ -143,7 +147,8 @@ anovaPB=function(objectNull, object, n.sim=999, colRef = switch(class(object)[1]
   }
   else
   {
-    mf <- match.call(call=object$call)
+    cll <- object$call
+    mf  <- match.call(call=cll)
     dat <- object$data
   }
   m <- match(c("formula", "data", "subset", 
@@ -212,12 +217,12 @@ anovaPB=function(objectNull, object, n.sim=999, colRef = switch(class(object)[1]
     }    
     return(anovaFn(objectiNull,objecti,...)[rowRef,colRef])
   }
-  
+
   if(ncpus>1)
   {
     cl <- parallel::makeCluster(ncpus)
     parallel::clusterExport(cl,c("getStat","anovaFn","yNew","objectNull","object","modelF","is.mva","fm.update","whichResp",
-                               "respDimnames","rowRef","colRef",as.character(object$call[[1]])), envir=environment())
+                               "respDimnames","rowRef","colRef",as.character(cll[[1]])), envir=environment())
     statList <- parallel::clusterApplyLB(cl, 1:n.sim, getStat, yNew=yNew, objectNull=objectNull, object=object, modelF=modelF,
                                          anovaFn=anovaFn, is.mva=is.mva, fm.update=fm.update, whichResp=whichResp, 
                                          respDimnames=respDimnames, rowRef=rowRef, colRef=colRef)

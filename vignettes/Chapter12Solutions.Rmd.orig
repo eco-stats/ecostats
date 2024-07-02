@@ -11,7 +11,7 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE, fig.path=figPath,
+  collapse = TRUE, fig.path="../man/figures/",
   comment = "#>"
 )
 ```
@@ -35,7 +35,7 @@ regeneration on invertebrate communities?*
 Anthony has a bunch of response variables so I guess as well as plotting each response one-at-a-time he could try plotting them simultaneously using ordination. He has counts so will need something that works for non-Gaussian responses like generalised latent variable models. In either plot he would want to label different species differently to see variation between revegetated and control plots.
 
 ## Code Box 12.1: Plotting the bush regeneration data of Exercise 12.1 using `mvabund`.
-```{r code12.1,fig.width=6,fig.height=7}
+```{r code12.1,fig.width=5,fig.height=6}
 library(mvabund)
 library(ecostats)
 data(reveg)
@@ -50,7 +50,7 @@ There seem to be less invertebrates in control plots for *Collembola*, *Acarina*
 
 ## Code Box 12.2: A PCA of Edgar's *Iris* data
 
-```{r code12.2, fig.width=6, fig.height=6}
+```{r code12.2, fig.width=5, fig.height=5}
 data("iris")
 pc = princomp(iris[,1:4],cor=TRUE)
 pc
@@ -157,12 +157,12 @@ logLik(reveg_LVM)
 ```
 Repeating this several times usually returns an answer of `-689.3`, so we can be confident this is (close to) the maximum likelihood solution. To get a biplot
 of this solution:
-```{r code12.6bi, fig.width=6, fig.height=6}
+```{r code12.6bi, fig.width=5, fig.height=5}
 ordiplot(reveg_LVM, col=as.numeric(reveg$treatment), biplot=TRUE,
 ind.spp=12)
 ```
 
-```{r code12.6plot, fig.width=9}
+```{r code12.6plot, fig.width=8}
 par(mfrow=c(1,3),mar=c(3,3,1,1),mgp=c(1.75,0.75,0))
 plot(reveg_LVM,which=c(1,2,5))
 ```
@@ -184,7 +184,7 @@ For me two latent variable models was the winner!
 *Fit a Poisson model to the data and check assumptions. Are there any signs of overdispersion?*
 
 I'll go with two latent variable models, on account of this looking the best in the above.
-```{r ex12.5, fig.width=9}
+```{r ex12.5, fig.width=8}
 reveg_LVM1 = gllvm(reveg$abund, num.lv=2, family="poisson", trace=TRUE, jitter.var=0.2)
 par(mfrow=c(1,3))
 plot(reveg_LVM1,which=c(1,2,5))
@@ -194,9 +194,9 @@ Wow this does not look good! There is a clear fan-shape in the residual vs fits 
 
 
 ## Code Box 12.7: A non-metric multi-dimensional scaling ordination of Anthony’s data
-```{r code12.7, fig.height=6, fig.width=6}
+```{r code12.7, fig.height=4, fig.width=4}
 library(vegan)
-ord_mds=metaMDS(reveg$abund)
+ord_mds=metaMDS(reveg$abund, trace=0)
 plot(ord_mds$points,pch=as.numeric(reveg$treatment),col=reveg$treatment)
 ```
 
@@ -210,8 +210,8 @@ tikusAbund = tikusAbund[,apply(tikusAbund,2,sum)>0] # remove zerotons
 ```
 
 *Construct an MDS plot of the data, using the Bray-Curtis distance (default), and colour-code symbols by year of sampling.*
-```{r ex12.6ordination, fig.height=6, fig.width=6}
-tikus_mds=metaMDS(tikusAbund)
+```{r ex12.6ordination, fig.height=4, fig.width=4}
+tikus_mds=metaMDS(tikusAbund, trace=0)
 plot(tikus_mds$points,pch=as.numeric(tikus$x$time),col=tikus$x$time)
 ```
 
@@ -221,8 +221,8 @@ Yes it does, 1981 (before El Niño disturbance) the points are close together in
 
 *Construct another MDS plot using the Euclidean distance on `log(y+1)`-transformed data.*
 
-```{r ex12.6EucOrdination, fig.height=6, fig.width=6}
-tikus_mdsEuc=metaMDS(log(tikusAbund+1),distance="euclidean")
+```{r ex12.6EucOrdination, fig.height=4, fig.width=4}
+tikus_mdsEuc=metaMDS(log(tikusAbund+1),distance="euclidean", trace=0)
 plot(tikus_mdsEuc$points,pch=as.numeric(tikus$x$time),col=tikus$x$time)
 ```
 
@@ -232,13 +232,13 @@ Nope -- this says the opposite, with much lower dispersion post disturbance. It 
 
 *Use the `plot.mvabund` function to plot each coral response variable as a function of time. What is the main pattern that you see?*
 
-```{r ex12.6plot, fig.width=7,fig.height=8}
+```{r ex12.6plot, fig.width=6,fig.height=7}
 tikusMV = mvabund(tikusAbund)
 plot(tikusMV~tikus$x$time[1:20])
 ```
 
 *Convert the data into presence-absence and use the gllvm package to construct an ordination*
-```{r ex12.6PA, fig.height=6, fig.width=6}
+```{r ex12.6PA, fig.height=5, fig.width=5}
 tikusPA = tikusAbund
 tikusPA[tikusPA>1]=1
 tikus_LVM = gllvm(tikusPA, num.lv=2, family="binomial", trace=TRUE, jitter.var=0.2)
@@ -246,7 +246,7 @@ ordiplot.gllvm(tikus_LVM, s.col=as.numeric(tikus$x$time), biplot=TRUE, ind.spp=1
 ```
 
 *Do assumptions appear reasonable? How would you interpret this plot?*
-```{r ex12.6assumptions, fig.width=9,fig.height=3.5}
+```{r ex12.6assumptions, fig.width=8,fig.height=3}
 par(mfrow=c(1,3))
 plot(tikus_LVM,which=c(1,2,5))
 ```

@@ -11,7 +11,7 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE, fig.path=figPath,
+  collapse = TRUE, fig.path="../man/figures/",
   comment = "#>"
 )
 ```
@@ -109,24 +109,24 @@ print( c(rss_r,rss_rs) )
 
 ## Code Box 5.2: 5-fold cross-validation for the data of Exercise 5.1
 
-```{r box52, fig.height=6, fig.width=8}
+```{r box52}
 library(DAAG)
 ft_r = lm(log(height)~rain,dat=globalPlants)
 ft_rs = lm(log(height)~rain+rain.seas,dat=globalPlants)
-cv_r = cv.lm(data=globalPlants, ft_r, m=5, printit=FALSE) # 5 fold CV
-cv_rs = cv.lm(data=globalPlants, ft_rs, m=5, printit=FALSE) # 5 fold CV
+cv_r = cv.lm(data=globalPlants, ft_r, m=5, printit=FALSE, plotit=FALSE) # 5 fold CV
+cv_rs = cv.lm(data=globalPlants, ft_rs, m=5, printit=FALSE, plotit=FALSE) # 5 fold CV
 print( c( attr(cv_r,"ms"),attr(cv_rs,"ms") ), digits=6 )
 
-cv_r = cv.lm(data=globalPlants, ft_r, m=5, printit=FALSE,seed=1) # 5 fold CV
-cv_rs = cv.lm(data=globalPlants, ft_rs, m=5, printit=FALSE,seed=1) # 5 fold CV
+cv_r = cv.lm(data=globalPlants, ft_r, m=5, printit=FALSE,seed=1, plotit=FALSE) # 5 fold CV
+cv_rs = cv.lm(data=globalPlants, ft_rs, m=5, printit=FALSE,seed=1, plotit=FALSE) # 5 fold CV
 print( c( attr(cv_r,"ms"),attr(cv_rs,"ms") ), digits=6 )
 
-cv_r = cv.lm(data=globalPlants, ft_r, m=5, printit=FALSE,seed=2) # 5 fold CV
-cv_rs = cv.lm(data=globalPlants, ft_rs, m=5, printit=FALSE,seed=2) # 5 fold CV
+cv_r = cv.lm(data=globalPlants, ft_r, m=5, printit=FALSE,seed=2, plotit=FALSE) # 5 fold CV
+cv_rs = cv.lm(data=globalPlants, ft_rs, m=5, printit=FALSE,seed=2, plotit=FALSE) # 5 fold CV
 print( c( attr(cv_r,"ms"),attr(cv_rs,"ms") ), digits=6 )
 
-cv_r = cv.lm(data=globalPlants, ft_r, m=5, printit=FALSE,seed=3) # 5 fold CV
-cv_rs = cv.lm(data=globalPlants, ft_rs, m=5, printit=FALSE,seed=3) # 5 fold CV
+cv_r = cv.lm(data=globalPlants, ft_r, m=5, printit=FALSE,seed=3, plotit=FALSE) # 5 fold CV
+cv_rs = cv.lm(data=globalPlants, ft_rs, m=5, printit=FALSE,seed=3, plotit=FALSE) # 5 fold CV
 print( c( attr(cv_r,"ms"),attr(cv_rs,"ms") ), digits=6 )
 ```
 

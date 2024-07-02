@@ -14,6 +14,7 @@
 ^vignettes/Chapter15Solutions\.Rmd\.orig$
 ^vignettes/Chapter16Solutions\.Rmd\.orig$
 ^vignettes/precompile\.R$
+^man/figures/ignore$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$

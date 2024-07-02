@@ -86,9 +86,11 @@ model types (\code{glm}, \code{gam}, \code{lmer}).
 # fit a Poisson regression to random data:
 y = rpois(50,lambda=1)
 x = 1:50
-rpois_glm = glm(y~x,family=poisson())
-rpois_int = glm(y~1,family=poisson())
-anovaPB(rpois_int,rpois_glm,n.sim=99)
+rpois_glm = glm(y~x, family=poisson())
+rpois_int = glm(y~1, family=poisson())
+anovaPB(rpois_int, rpois_glm, n.sim=99, ncpus=1)
+# this approach would run faster on some larger problems (but maybe not this one!):
+\dontrun{anovaPB(rpois_int, rpois_glm, n.sim=99, ncpus=4)}
 
 }
 \references{
