@@ -32,7 +32,7 @@ As before we will answer this question using multiple regression, a type of line
 
 Here is the code behind Figures 5.1-5.2.  Because of the small sample size, you can get quite different answers on different runs! Hence the seed has been fixed at the values used to generate results in the text.
 
-```{r fig5.1-2, fig.width=8, fig.height=3}
+```{r fig5.1, fig.width=8, fig.height=3}
 sigma=1.2
 n=20
 nDegree=8
@@ -78,7 +78,9 @@ for(iDegree in 1:nDegree)
 legend("bottomright",c("Training data","Test data"),pch=c("o","*"),col=c("black",dgreen))
 print(err)
 
+```
 
+```{r fig5.2, fig.width=5, fig.height=3}
 par(mar = c(2.75,2.75,1,1),mgp=c(1.75,0.75,0),mfrow=c(1,1),las=1)
 plot(1:nDegree,errTrain,type="l",ylim=c(0,max(c(err,errTrain))),ylab="Mean squared error",xlab="Degree of polynomial [log scale]",xaxt="n",log="x",yaxt="n")
 lines(1:nDegree,err,col=dgreen)
@@ -163,7 +165,7 @@ stepForward$anova
 
 I used `nSim=1000` in the book, but have set it to `50` here so the code doesn't take ages to run...
 
-```{r subsetsim, fig.width=8, fig.height=4}
+```{r subsetsim, fig.width=6, fig.height=3}
 library(mvtnorm)
 nSim = 50 # increase this for a more precise answer 
 p=8
@@ -346,7 +348,7 @@ rainAn
 ```
 
 # Code for Figure 5.5
-```{r fig5.5, fig.width=8, fig.height=3}
+```{r fig5.5, fig.width=6, fig.height=2}
 par(mgp=c(1.75,0.75,0),mar=c(2.75,0.5,0.5,0))
   
   R2sTemp = c(0,tempAn$R2[2])
@@ -372,7 +374,7 @@ par(mgp=c(1.75,0.75,0),mar=c(2.75,0.5,0.5,0))
 
 This is a model selection question, we want to see which environmental variables are associated with  head-bobbing, so will try a bunch of different models with different predictors to see which one(s) fits best.
 
-```{r headbobs, fig.width=8, fig.height=4}
+```{r headbobs, fig.width=7, fig.height=3.5}
 data(headbobLizards)
 str(headbobLizards)
 
@@ -421,7 +423,7 @@ Well glad we looked at this as well... so temperature and noisiness both seem as
 *Find a subset of precipitation variables that optimally predicts plant height*
 
 I'll start with forward selection.  We know temp is important so I will include that in all models
-```{r ex5.5plantprecip, fig.width=8, fig.height=4}
+```{r ex5.5plantprecip, fig.width=7, fig.height=3.5}
 data(globalPlants)
 str(globalPlants)
 globalPlants$logHt = log(globalPlants$height)

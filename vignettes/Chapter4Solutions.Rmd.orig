@@ -197,7 +197,7 @@ Note we used `Time*Dist` because `Time` is not the variable of primary interest,
 
 
 ## Code Box 4.10: R code for the interaction plot in Figure 4.1.
-```{r box4.10seaweedinterplot, fig.width=5, fig.height=4}
+```{r box4.10seaweedinterplot, fig.width=5, fig.height=4, warning=FALSE, message=FALSE}
  library(dplyr)
  seaweed$Time = as.factor(seaweed$Time) 
  by_DistTime = group_by(seaweed,Dist,Time)
