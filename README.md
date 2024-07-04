@@ -8,7 +8,7 @@
 [![CRAN](http://www.r-pkg.org/badges/version/ecostats)](https://CRAN.R-project.org/package=ecostats) 
 [![Downloads](http://cranlogs.r-pkg.org/badges/ecostats?color=brightgreen)](https://www.r-pkg.org/pkg/ecostats)
 [![R-CMD-check](https://github.com/eco-stats/ecostats/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/eco-stats/ecostats/actions/workflows/R-CMD-check.yaml) 
-[![Codecov test coverage](https://codecov.io/gh/eco-stats/ecostats/branch/ghactions/graph/badge.svg?token=95vH8l02ZK)](https://app.codecov.io/gh/eco-stats/ecostats?branch=ghactions)
+[![Codecov test coverage](https://codecov.io/gh/eco-stats/ecostats/branch/ghactions/graph/badge.svg?token=95vH8l02ZK)](https://app.codecov.io/gh/eco-stats/ecostats?branch=master)
 <!-- badges: end -->
 
 #### Author
