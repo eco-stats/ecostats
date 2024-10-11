@@ -11,7 +11,7 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE, fig.path=figPath,
+  collapse = TRUE, fig.path="../man/figures/",
   comment = "#>"
 )
 ```
@@ -257,10 +257,13 @@ The reduced rank approach fits better.
 
 ## Code Box 15.6: Using the LASSO for Petrus’s spider data
 
-```{r code15.6, fig.width=8, fig.height=8, warning=FALSE}
+```{r code15.6, fig.width=5, fig.height=4, warning=FALSE}
 library(mvabund)
 data(spider)
 spid.trait = traitglm(spider$abund,spider$x,method="cv.glm1path")
+```
+
+```{r code15.6lattice, fig.width=8, fig.height=8, warning=FALSE}
 library(lattice)
 a = max( abs(spid.trait$fourth.corner) )
 colort = colorRampPalette(c("blue","white","red"))

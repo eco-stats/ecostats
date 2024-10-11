@@ -11,7 +11,7 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE, fig.path=figPath,
+  collapse = TRUE, fig.path="../man/figures/",
   comment = "#>"
 )
 ```
@@ -26,7 +26,7 @@ Because we now have repeated measures in time, we have longitudinal data and sho
 
 ## Code Box 7.1: R code to produce Figure 7.2.
 
-```{r box71, fig.width=8,fig.height=7}
+```{r box71, fig.width=7,fig.height=6}
 library(ecostats)
 data(aphids)
 cols=c(rgb(1,0,0,alpha=0.5),rgb(0,0,1,alpha=0.5)) #transparent colours
@@ -45,7 +45,7 @@ mtext("(b)",3,adj=0,line=0.5,cex=1.4)
 
 ## Code Box 7.2: Choosing a longitudinal model for the aphid data
 
-```{r box72, fig.width=5, fig.height=5}
+```{r box72, fig.width=5, fig.height=4}
 library(lme4)
 aphid_int = lmer(logcount~Treatment*Time+Treatment*I(Time^2)+(1|Plot),
     data=aphids$oat,REML=FALSE) # random intercepts model
@@ -84,7 +84,7 @@ anova(aphid_noTreatS,aphid_slope)
 ## Exercise 7.2: Biological control of aphids in a wheat field
 *Repeat the above longitudinal analyses for data from the wheat field. Which longitudinal model better handles repeated measures in this case?*
 
-```{r ex72plot, fig.width=8,fig.height=4}
+```{r ex72plot, fig.width=7,fig.height=3.5}
 data(aphids)
 cols=c(rgb(1,0,0,alpha=0.5),rgb(0,0,1,alpha=0.5)) #transparent colours
 par(mar=c(3,3,1.5,1),mgp=c(2,0.5,0),oma=c(0,0,0.5,0))
@@ -96,7 +96,7 @@ legend("bottomleft",c("Excluded","Present"),col=cols,lty=1)
 
 As before we don't see a lot of lines crossing over so expect some correlation. We also see a similar pattern with aphid counts reducing over time, but possibly being higher without bird exclusion 2-5 weeks into the trial. 
 
-```{r ex72long, fig.width=5, fig.height=5}
+```{r ex72long, fig.width=5, fig.height=4}
 
 library(lme4)
 aphidw_int = lmer(logcount~Treatment*Time+Treatment*I(Time^2)+(1|Plot),
@@ -192,7 +192,7 @@ anova(ft_richNugg)
 
 ## Code Box 7.7: Spatial correlogram for Ian's species richness data
 
-```{r box77, fig.width=6, fig.height=6}
+```{r box77, fig.width=6, fig.height=4}
 library(pgirmess)
 corRich = with(Myrtaceae,correlog(cbind(X,Y),logrich))
 plot(corRich,xlim=c(0,150),ylim=c(-0.05,0.2))
@@ -216,7 +216,7 @@ A potential issue is that there is a phylogenetic signal in many traits: if shor
 
 ## Code Box 7.8: Phylogenetic tree of 71 shorebird species
 
-```{r box7.8,fig.width=8,fig.height=9}
+```{r box7.8,fig.width=7,fig.height=9}
 library(caper)
 data(shorebird)
 shore4d=phylobase::phylo4d(shorebird.tree,shorebird.data)
@@ -227,7 +227,7 @@ barplot.phylo4d(shore4d,c("Egg.Mass","F.Mass","M.Mass"))
 
 ## Code Box 7.9: Exploratory analysis of egg size data}\label{code:eggEDA}
 
-```{r box7.9, fig.width=7, fig.height=7}
+```{r box7.9, fig.width=6, fig.height=6}
 library(GGally)
 ggpairs(log(shorebird.data[,2:4]))
 ```
