@@ -58,6 +58,7 @@
 #' @param add.smooth logical defaults to \code{TRUE}, which adds a smoother to residual vs fits and
 #' scale-location plots, and computes a global envelope around the \emph{smoother} rather than the data (\code{add.smooth=FALSE}). No smoother is added to the normal quantile plot.
 #' @param plot.it logical. Should the result be plotted? If not, a list of analysis outputs is returned, see \emph{Value}.
+#' @param do.qq.line logical. Should a line be included on the qq plot? Default is FALSE.
 #' @param resFunction the function used to compute residuals for all diagnostic plots. Defaults
 #' to \code{\link{cresiduals}} for multivariate linear models, \code{\link{rstandard}} for linear
 #' models, or \code{\link{residuals}} in other cases.
@@ -191,7 +192,7 @@ plotenvelope = function (y, which = 1:2, sim.method="refit",
                        ylab = c("Residuals", "Residuals", expression(sqrt("|Residuals|"))), col=NULL, 
                        line.col=if(add.smooth) c("slateblue4","olivedrab","slateblue4") else rep("olivedrab",3), 
                        envelope.col = adjustcolor(line.col, 0.1), add.smooth=TRUE,
-                       plot.it = TRUE, resFunction=NULL, predFunction=NULL, fitMin=if(inherits(y,"glm")|inherits(y,"manyglm")) -6 else -Inf, ...) 
+                       plot.it = TRUE, do.qq.line = FALSE, resFunction=NULL, predFunction=NULL, fitMin=if(inherits(y,"glm")|inherits(y,"manyglm")) -6 else -Inf, ...) 
   {
   ### which plots to construct? And clean up arguments
   show = rep(FALSE, 6)
@@ -284,6 +285,10 @@ plotenvelope = function (y, which = 1:2, sim.method="refit",
     mu     = switch(sim.method[1],"stand.norm" = 0, mean(y))
     sigma  = switch(sim.method[1],"stand.norm" = 1, sd(y))
   }
+  
+  ## if envelope.col or line.col is scalar, make a vector
+  if(length(line.col)<3) line.col=rep(line.col,length=3)
+  if(length(envelope.col)<3) envelope.col=rep(envelope.col,length=3)
   
   ### now simulate new residuals and get fitted values too ###
   n.obs=length(y)
@@ -417,7 +422,7 @@ plotenvelope = function (y, which = 1:2, sim.method="refit",
         out[[1]][[i.resp]] = resFitEnvelope(x[,i.resp],y[,i.resp],fits[whichRows,], resids[whichRows,],
                                             n.obs=n.rows, conf.level=conf.level, type=type, n.sim=n.sim,
                                             plot.it=plot.it, main=paste0(main, ": ", colnames(y)[i.resp]), ylab=ylab, xlab=xlab, col=col,
-                                            line.col=line.col, envelope.col=envelope.col, 
+                                            line.col=line.col, envelope.col=envelope.col, do.qq.line=do.qq.line,
                                             add.smooth=add.smooth, nXs = length(unique(x[,i.resp])), nPred=500, ...)  
       }
     }
@@ -429,7 +434,7 @@ plotenvelope = function (y, which = 1:2, sim.method="refit",
   {
     if(overlay==TRUE || is.mva==FALSE)
       out[[2]] = qqnormEnvelope(y, resids, n.obs=n.obs, transform=transform, conf.level=conf.level, type=type, sim.method=sim.method,
-                                plot.it=plot.it, main=main, ylab=ylab, xlab=xlab, col=col, line.col=line.col, envelope.col=envelope.col, ...)
+                                plot.it=plot.it, main=main, ylab=ylab, xlab=xlab, col=col, line.col=line.col, envelope.col=envelope.col, do.qq.line=do.qq.line, ...)
     else
     {
       out[[2]] = vector("list",n.resp)
@@ -439,7 +444,7 @@ plotenvelope = function (y, which = 1:2, sim.method="refit",
         whichRows = (i.resp-1)*n.rows + 1:n.rows
         out[[2]][[i.resp]] = qqnormEnvelope(y[,i.resp], resids[whichRows,], n.obs=n.rows, transform=transform, conf.level=conf.level, type=type, sim.method=sim.method,
                                             plot.it=plot.it, main=paste0(main, ": ", colnames(y)[i.resp]), ylab=ylab, xlab=xlab, col=col, 
-                                            line.col=line.col, envelope.col=envelope.col, ...)
+                                            line.col=line.col, envelope.col=envelope.col, do.qq.line=do.qq.line, ...)
       }
     }
   }
@@ -566,7 +571,7 @@ resFitEnvelope = function(x,y,fits, resids, n.obs, conf.level=0.95, type="st",n.
 }
 
 qqnormEnvelope = function(y, resids, n.obs, transform, conf.level=0.95, type="st", sim.method="refit",
-                          plot.it=TRUE, main, ylab, xlab, col, line.col, envelope.col, ...)
+                          plot.it=TRUE, main, ylab, xlab, col, line.col, envelope.col, do.qq.line=do.qq.line, ...)
 {
   qq.x=qqnorm(as.vector(y),plot.it=FALSE)
   qqSort=apply(resids,2,sort)
@@ -589,33 +594,41 @@ qqnormEnvelope = function(y, resids, n.obs, transform, conf.level=0.95, type="st
   {
     # make qqplot
     plot(qq.x$x, qq.x$y, col=col, main=main[2], 
-         xlab=xlab[2], ylab=ylab[2], ...)
-    #add a qq line.
-    # this is done as in qqline, but limited to range of data, unless sim.method="stand.norm"
-    probs=c(0.25,0.75)
-    qs=quantile(qq.x$y,probs)
-    xs=qnorm(probs)
-    if(sim.method[1]=="stand.norm")
-    {
-      slope = 1
-      int = 0
-    }
-    else
-    {
-      slope=diff(qs)/diff(xs)
-      int=qs[1]-slope*xs[1]
-    }
+         xlab=xlab[2], ylab=ylab[2], type="n", ...)
+
+    # add envelope
     #truncate limits outside of data range so polygon actually bloody plots 
     loPlot = cr$lo
     hiPlot = cr$hi
     eps=0.025*(max(y)-min(y))
     loPlot[cr$lo<min(y)] = min(y)-eps
     hiPlot[cr$hi>max(y)] = max(y)+eps
-    
-    # add envelope
     polygon(sort(qq.x$x)[c(1:n.obs,n.obs:1)], c(loPlot,hiPlot[n.obs:1]), 
             col=envelope.col[2], border=NA)
     #        lines(range(qq.x$x),int+slope*range(qq.x$x),col=line.col[2])
+
+    #add a qq line, if requested.
+    # this is done as in qqline, but limited to range of data, unless sim.method="stand.norm"
+    if(do.qq.line)
+    {
+      probs=c(0.25,0.75)
+      qs=quantile(qq.x$y,probs)
+      xs=qnorm(probs)
+      if(sim.method[1]=="stand.norm")
+      {
+        slope = 1
+        int = 0
+      }
+      else
+      {
+        slope=diff(qs)/diff(xs)
+        int=qs[1]-slope*xs[1]
+      }
+      lines(range(qq.x$x), int+slope*range(qq.x$x), col=line.col[2])
+    }
+
+    # add data
+    points(qq.x$x, qq.x$y, col=col, ...)
   }
   # return a list with qq values and limits, ordered same way as input data
   qqLo = qqHi = rep(NA,n.obs)
