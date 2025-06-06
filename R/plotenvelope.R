@@ -236,10 +236,7 @@ plotenvelope = function (y, which = 1:2, sim.method="refit",
   else
     prFunction = function(obj,xMin){pmax(predFunction(obj), xMin)}
   
-  if(inherits(object,"glmmTMB"))
-    y = resFunction(object,type="pearson")
-  else
-    y = resFunction(object)
+  y = resFunction(object)
   x = prFunction(object, xMin=fitMin)
   
   y[y==Inf] = 2*max(y[y<Inf]) #deal with any probs with infinite resids
@@ -371,10 +368,7 @@ plotenvelope = function (y, which = 1:2, sim.method="refit",
         newFit         = try(update(objectY, formula=fm.update, data=modelF))
       else
         newFit         = try(update(objectY, formula=fm.update, data=modelF, offset=offs))
-      if(inherits(object,"glmmTMB"))
-        resids[,i.sim] = resFunction(newFit,type="pearson")
-      else
-        resids[,i.sim] = resFunction(newFit)
+      resids[,i.sim] = resFunction(newFit)
       ftt   = try(prFunction(newFit, xMin=fitMin)) #using try for fitted values because eel data occasionally failed(!?)
       if(inherits(ftt,"try-error"))
         fits[,i.sim] = x
